@@ -1,10 +1,14 @@
 'use strict';
-var width = 500;
-var height = 500;
+
+var board = {
+  width: 500,
+  height: 500,
+}
+
 var c = document.querySelector('.snakeCanvas');
 var ctx = c.getContext("2d");
-c.setAttribute("width", width);
-c.setAttribute("height", height);
+c.setAttribute("width", board.width);
+c.setAttribute("height", board.height);
 
 var snake = {
   x: 0,
@@ -13,6 +17,14 @@ var snake = {
 
   draw: function() {
     ctx.fillRect(this.x, this.y, this.headSize, this.headSize);
+  },
+
+  setX: function(x) {
+    return this.x = x
+  },
+
+  setY: function(y) {
+    return this.y = y
   },
 
   move: function(direction, speed) {
@@ -28,49 +40,43 @@ var snake = {
     else if (direction == 'up') {
       this.y -= 1 * speed;
     }
+  },
+
+  borderHandling: function(x, y){
+    if(x > board.width){
+      this.x = 0;
+    }
+    if(x < 0){
+      this.x = width
+    }
+    if(y > board.height){
+      this.y = 0;
+    }
+    if(y < 0){
+      this.y = height;
+    }
   }
 };
 
-var mapping = {
-  39:'right',
-  37:'left',
-  38:'up',
-  40:'down'
-}
-
-function keyListener(e){
-  var x = e.keyCode;
-  console.log(x);
-  console.log(mapping[x]);
-  return currentKey = mapping[x];
-}
-
-var currentKey = '';
-
-function border(x, y){
-  console.log(x, + ' ' + y);
-  if(x > width){
-     x = 0
-  }
-  if(x < 0){
-    console.log('restart');
-     x = width
-     console.log(x);
-  }
-  if(y > height){
-     y = 0
-  }
-  if(y < 0){
-     y = height
+var controll = {
+  currentKey:'z',
+  mapping: {
+    39:'right',
+    37:'left',
+    38:'up',
+    40:'down'
+  },
+  keyTranslator: function(e){
+    var key = e.keyCode;
+    return controll.currentKey = controll.mapping[key]
+  },
+  main: function(){
+    ctx.clearRect(0, 0, board.width, board.height);
+    snake.borderHandling(snake.x, snake.y);
+    snake.move(controll.currentKey, 1);
+    snake.draw();
   }
 }
 
-function controll(){
-  ctx.clearRect(0, 0, width, height);
-  border(snake.x, snake.y);
-  snake.move(currentKey, 1);
-  snake.draw();
-}
-
-window.addEventListener('keydown', keyListener);
-setInterval(controll, 20);
+window.addEventListener('keydown', controll.keyTranslator);
+setInterval(controll.main, 20);
