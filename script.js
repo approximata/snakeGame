@@ -47,18 +47,18 @@ var snake = {
       this.x = 0;
     }
     if(x < 0){
-      this.x = width
+      this.x = board.width
     }
     if(y > board.height){
       this.y = 0;
     }
     if(y < 0){
-      this.y = height;
+      this.y = board.height;
     }
   }
 };
 
-var controll = {
+var control = {
   currentKey:'z',
   mapping: {
     39:'right',
@@ -68,15 +68,15 @@ var controll = {
   },
   keyTranslator: function(e){
     var key = e.keyCode;
-    return controll.currentKey = controll.mapping[key]
+    control.currentKey = control.mapping[key]
   },
   main: function(){
     ctx.clearRect(0, 0, board.width, board.height);
     snake.borderHandling(snake.x, snake.y);
-    snake.move(controll.currentKey, 1);
+    snake.move(control.currentKey, 1);
     snake.draw();
   }
 }
 
-window.addEventListener('keydown', controll.keyTranslator);
-setInterval(controll.main, 20);
+window.addEventListener('keydown', control.keyTranslator);
+setInterval(control.main, 20);
