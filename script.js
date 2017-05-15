@@ -7,6 +7,7 @@ var BLOCK = 15;
 var snake = {
   x: 0,
   y: 0,
+  currentDir: 'right',
   size: 1,
   body: [[]],
   eat: function(){
@@ -27,17 +28,21 @@ var snake = {
     }
   },
   move: function(direction) {
-    if(direction === 'right') {
-      this.x += 1 * BLOCK;
+    if(direction === 'right' && this.currentDir != 'left') {
+      this.currentDir = 'right';
+      this.x += BLOCK;
+    } 
+    else if (direction === 'left' && this.currentDir != 'right') {
+      this.currentDir = 'left';
+      this.x -= BLOCK;
     }
-    else if (direction === 'left') {
-      this.x -= 1 * BLOCK;
+    else if (direction === 'down' && this.currentDir != 'up') {
+      this.currentDir = 'down';
+      this.y += BLOCK;
     }
-    else if (direction === 'down') {
-      this.y += 1 * BLOCK;
-    }
-    else if (direction === 'up') {
-      this.y -= 1 * BLOCK;
+    else if (direction === 'up' && this.currentDir != 'down') {
+      this.currentDir = 'up';
+      this.y -= BLOCK;
     }
   },
 };
@@ -56,8 +61,8 @@ var food = {
 };
 
 var board = {
-  pixWidth: window.innerWidth - 30,
-  pixHeight: window.innerHeight - 30,
+  pixWidth: window.innerWidth - (window.innerWidth % BLOCK + BLOCK * 2),
+  pixHeight: window.innerHeight - (window.innerHeight % BLOCK + BLOCK * 2),
   snake: snake,
   food: food,
   canvas: canvas,
@@ -70,13 +75,13 @@ var board = {
     this.contex.clearRect(0, 0, this.pixWidth, this.pixHeight);
   },
   border: function(x, y){
-    if(x > this.pixWidth){
+    if(x > this.pixWidth - BLOCK){
       snake.x = 0;
     }
     if(x < 0){
-      snake.x = this.pixWidth
+      snake.x = this.pixWidth;
     }
-    if(y > this.pixHeight){
+    if(y > this.pixHeight - BLOCK){
       snake.y = 0;
     }
     if(y < 0){
