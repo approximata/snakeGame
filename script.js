@@ -7,42 +7,57 @@ var BLOCK = 15;
 var snake = {
   x: 0,
   y: 0,
-  currentDir: 'right',
+  dx: 1,
+  dy: 0,
   size: 1,
   body: [[]],
-  eat: function(){
-    if(this.x === food.x && this.y === food.y){
+
+  isEat: function(){
+    return this.x === food.x && this.y === food.y
+  },
+
+  grow: function(){
+    if(this.isEat()){
       this.size += 1;
       this.body.push([this.x, this.y]);
       food.setFood();
     }
+  },
+  isDead: function(){
+
   },
   setBody: function(){
     this.body.unshift([this.x, this.y]);
     this.body.pop();
   },
   draw: function() {
+    this.x += this.dx * BLOCK;
+    this.y += this.dy * BLOCK;
     this.setBody()
     for(var i =0; i < this.size; i++){
       board.contex.fillRect(this.body[i][0], this.body[i][1], BLOCK, BLOCK);
     }
   },
   move: function(direction) {
-    if(direction === 'right' && this.currentDir != 'left') {
-      this.currentDir = 'right';
-      this.x += BLOCK;
-    } 
-    else if (direction === 'left' && this.currentDir != 'right') {
-      this.currentDir = 'left';
-      this.x -= BLOCK;
+    if(direction === 'right') {
+      if(this.dx === -1) return;
+      this.dx = 1;
+      this.dy = 0;
     }
-    else if (direction === 'down' && this.currentDir != 'up') {
-      this.currentDir = 'down';
-      this.y += BLOCK;
+    else if (direction === 'left') {
+      if(this.dx === 1) return;
+      this.dx = -1;
+      this.dy = 0;
     }
-    else if (direction === 'up' && this.currentDir != 'down') {
-      this.currentDir = 'up';
-      this.y -= BLOCK;
+    else if (direction === 'down') {
+      if(this.dy === -1) return;
+      this.dx = 0;
+      this.dy = 1;
+    }
+    else if (direction === 'up') {
+      if(this.dy === 1) return;
+      this.dx = 0;
+      this.dy = -1;
     }
   },
 };
@@ -108,7 +123,7 @@ var control = {
     board.snake.move(control.currentKey);
     board.snake.draw();
     board.food.draw();
-    board.snake.eat();
+    board.snake.grow();
   }
 };
 
